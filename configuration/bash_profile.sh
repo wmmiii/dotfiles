@@ -1,3 +1,3 @@
 #!bin/bash
 
-if [ -f $HOME/.bashrc ]; then source $HOME/.bashrc; fi;"
+if [ -f $HOME/.bashrc ]; then source $HOME/.bashrc; fi;

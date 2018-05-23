@@ -11,10 +11,10 @@ append_to_file ()
   string=$2
   if grep -Fxq "$string" $file &> /dev/null
   then
-    echo -e "${TXT_INFO}Already added to $file$TXT_RESET"
+    printf "${TXT_INFO}Already added to $file$TXT_RESET\n"
   else
-    echo -e "${TXT_INFO}Adding to $file$TXT_RESET"
-    echo $string >> $file
+    printf "${TXT_INFO}Adding to $file$TXT_RESET\n"
+    printf $string >> $file
   fi
 }
 
@@ -26,8 +26,11 @@ update_package_manager ()
   if (which apt && which dpkg) &> /dev/null
   then
     (apt update &> /dev/null) && apt upgrade -y
+  elif (which brew) &> /dev/null
+  then
+    (sudo -u $SUDO_USER brew update &> /dev/null) && sudo -u $SUDO_USER brew upgrade
   else
-    echo -e "${TXT_FAIL}Package manager not found!$TXT_RESET"
+    printf "${TXT_FAIL}Package manager not found!$TXT_RESET\n"
     exit 1
   fi
 }
@@ -40,13 +43,22 @@ install_package ()
   then
     if dpkg -s $package &> /dev/null
     then
-      echo -e "${TXT_INFO}Package $package already installed.$TXT_RESET"
+      printf "${TXT_INFO}Package $package already installed.$TXT_RESET\n"
     else
-      echo -e "${TXT_INFO}Installing $package using apt.$TXT_RESET"
+      printf "${TXT_INFO}Installing $package using apt.$TXT_RESET\n"
       apt install $package
     fi
+  elif which brew &> /dev/null
+  then
+    if sudo -u $SUDO_USER brew ls $package &> /dev/null
+    then
+      printf "${TXT_INFO}Package $package already installed.$TXT_RESET\n"
+    else
+      printf "${TXT_INFO}Installing $package using brew.$TXT_RESET\n"
+      sudo -u $SUDO_USER brew install $package
+    fi
   else
-    echo -e "${TXT_FAIL}Package manager not found!$TXT_RESET"
+    printf "${TXT_FAIL}Package manager not found!$TXT_RESET\n"
     exit 1
   fi
 }
