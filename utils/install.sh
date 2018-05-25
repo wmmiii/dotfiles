@@ -14,7 +14,7 @@ append_to_file ()
     printf "${TXT_INFO}Already added to $file$TXT_RESET\n"
   else
     printf "${TXT_INFO}Adding to $file$TXT_RESET\n"
-    printf $string >> $file
+    echo $string >> $file
   fi
 }
 
